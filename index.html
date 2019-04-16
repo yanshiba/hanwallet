@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>中文钱包</title>
+  </head>
+  <body>
+    <main>
+        <section class="jumbotron text-center">
+            <div class="container">
+              <h1 class="jumbotron-heading">中文钱包<small>(支持BTC、BCH、ETH、ETC)</small></h1>
+              <p class="lead text-muted">
+                  说明：用16个汉字生成唯一钱包。如生日、宠物名、格言等。
+              </p>
+              <p class="lead text-muted">
+                  只要记住这16个汉字，则可锁定BTC、ETH资产，是目前最安全的钱包形式。
+                </p>
+            </div>
+          </section>
+
+          <section class="jumbotron">
+            <form>
+                <div class="form-group">
+                    <label for="memo">输入16个汉字，请勿换行</label>
+                    <textarea class="form-control" id="memo" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">生成地址</button>
+                <button type="button" class="btn btn-warning">显示密钥</button>
+            </form>
+            <ul class="text-monospace">
+                <li>BTC:<code></code></li>
+                <li>BCH:<code></code></li>
+                <li>ETH:<code></code></li>
+                <li>ETC:<code></code></li>
+            </ul>
+            <p id="btc" class="p-2 rounded bg-light text-break" style="display: none;">
+              BTC/BCH密钥<code></code>
+            </p>
+            <p id="eth" class="p-2 rounded bg-light text-break" style="display: none;">
+              ETH/ETC密钥<code></code>
+            </p>
+          </section>
+
+          <section class="jumbotron">
+            <h2>注意事项:</h2>
+            <ul class="text-monospace">
+                <li>不建议用户保存私钥,易忘易被盗</li>
+                <li>只要记住16汉字,随时可恢复密钥</li>
+                <li>如担心被网络窃听,可断网后用本程序</li>
+                <li>项目开源地址:<a href="https://www.github.com/yanshiba/hanwallet">hanwallet</a></li>
+            </ul>
+            <h2>技术支持:</h2>
+            <a href="https://www.hadeschain.org">哈迪斯公链</a>
+            <a href="https://github.com/bitcoinjs/bitcoinjs-lib">bitcoinjs-lib</a>
+            <a href="https://github.com/indutny/elliptic">elliptic</a>
+            <a href="https://github.com/emn178/js-sha3">js-sha3</a>
+          </section>
+    </main>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://lib.baomitu.com/jquery/3.3.1/jquery.slim.js"></script>
+    <script src="https://lib.baomitu.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="./dist/hanwallet.js"></script>
+    <script>
+    $('.btn-primary').click(function(){
+       $('#btc').hide();
+       $('#eth').hide();
+
+        var memo = $('#memo').val();
+        if (/^[\u4e00-\u9fa5]{16}$/.test(memo) === false ) {
+          $('#memo').addClass('is-invalid');
+          return false;
+        }
+        var pk = hanwallet.chartopk(memo);
+        btckey = hanwallet.genBtc(pk);
+
+        $('li:lt(2) code').html( btckey.address.toString() );
+        $('li:gt(1) code').html( hanwallet.genEth(pk) );
+
+        $('#btc code').html(btckey.wif);
+        $('#eth code').html(pk);
+        return false;
+    });
+
+    $('.btn-warning').click(function() {
+      $('#btc').show(3000);
+    })
+    $('.btn-warning').click(function() {
+      $('#eth').show('slow');
+    })
+    </script>
+  </body>
+</html>
